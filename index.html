@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Loomscape — Kini memahami pasar jadi lebih mudah</title>
+<meta name="description" content="Loomscape membantu tim memantau percakapan pasar, aktivitas kompetitor, dan tren yang berkembang, lalu mengubahnya menjadi insight yang relevan untuk keputusan marketing.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cg stroke='%23063C2A' stroke-width='3.4' stroke-linecap='round'%3E%3Cpath d='M11 5v22M21 5v22'/%3E%3Cpath d='M5 10h4M15 10h12M5 16h14M23 16h4M5 22h4M15 22h12'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ============ TOKENS ============ */
+:root{
+  --bg:#FAFAF6;
+  --surface:#FFFFFF;
+  --ink:#063C2A;
+  --ink-2:rgba(6,60,42,.72);
+  --ink-3:rgba(6,60,42,.65);
+  --line:rgba(6,60,42,.10);
+  --line-2:rgba(6,60,42,.16);
+  --lime:#BCF83F;
+  --lime-deep:#A9E532;
+  --green-mid:#0E5A40;
+  --green-soft:#EDF3EA;
+  --on-green:#F2F7EE;
+  --on-green-2:rgba(242,247,238,.78);
+  --shadow-md:0 32px 80px -40px rgba(6,60,42,.35);
+  --shadow-sm:0 10px 30px -14px rgba(6,60,42,.28);
+  --r-lg:22px;
+  --r-md:16px;
+  --r-sm:12px;
+  --font:'Manrope',Arial,Helvetica,sans-serif;
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--font);
+  background:var(--bg);
+  color:var(--ink);
+  font-size:17px;
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+  overflow-x:hidden;
+}
+::selection{background:var(--lime);color:var(--ink)}
+:focus-visible{outline:2px solid var(--ink);outline-offset:3px;border-radius:4px}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:rgba(6,60,42,.22);border-radius:6px;border:2px solid var(--bg)}
+::-webkit-scrollbar-thumb:hover{background:rgba(6,60,42,.38)}
+img,svg{display:block}
+a{color:inherit;text-decoration:none}
+.num{font-feature-settings:"tnum"}
+section{scroll-margin-top:92px}
+
+.skip{position:absolute;left:-9999px;top:0;background:var(--ink);color:var(--on-green);padding:10px 18px;border-radius:0 0 12px 0;z-index:200;font-weight:700;font-size:14px}
+.skip:focus{left:0}
+
+.wrap{max-width:1160px;margin:0 auto;padding:0 32px}
+h1,h2,h3{text-wrap:balance;letter-spacing:-0.025em;line-height:1.12;font-weight:800}
+.lead{color:var(--ink-2);max-width:640px}
+
+/* ============ REVEAL ============ */
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .9s var(--ease),transform .9s var(--ease)}
+.reveal.in{opacity:1;transform:none}
+
+/* ============ NAV ============ */
+.nav{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1px solid var(--line)}
+.nav-in{max-width:1160px;margin:0 auto;padding:0 32px;height:72px;display:flex;align-items:center;gap:36px}
+.brand{display:flex;align-items:center;gap:11px;font-weight:800;font-size:19px;letter-spacing:-.02em}
+.brand svg{width:28px;height:28px}
+.nav-links{display:flex;gap:28px;margin-left:8px}
+.nav-links a{font-size:14.5px;font-weight:600;color:var(--ink-2);transition:color .25s}
+.nav-links a:hover{color:var(--ink)}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:22px}
+.nav-login{font-size:14.5px;font-weight:700;color:var(--ink)}
+.nav-login:hover{text-decoration:underline;text-underline-offset:4px}
+.burger{display:none;background:none;border:0;cursor:pointer;padding:8px;margin-left:auto}
+.mobile-panel{display:none;border-top:1px solid var(--line);background:var(--bg);padding:8px 32px 24px}
+.mobile-panel a{display:block;padding:13px 0;font-weight:700;border-bottom:1px solid var(--line);font-size:16px}
+.mobile-panel a:last-child{border-bottom:0}
+.mobile-panel.open{display:block}
+
+/* ============ BUTTONS ============ */
+.btn{white-space:nowrap;display:inline-flex;align-items:center;gap:9px;font-weight:800;font-size:15.5px;padding:14px 26px;border-radius:999px;transition:transform .35s var(--ease),background .25s,box-shadow .35s var(--ease);cursor:pointer;border:0;letter-spacing:-.01em}
+.btn svg{width:16px;height:16px;transition:transform .35s var(--ease)}
+.btn:hover svg{transform:translateX(3px)}
+.btn-lime{background:var(--lime);color:var(--ink);box-shadow:0 12px 28px -14px rgba(6,60,42,.45)}
+.btn-lime:hover{background:var(--lime-deep);transform:translateY(-2px)}
+.btn-ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--line-2)}
+.btn-ghost:hover{box-shadow:inset 0 0 0 1.5px var(--ink);transform:translateY(-2px)}
+.btn-sm{padding:10px 20px;font-size:14px}
+
+/* ============ HERO ============ */
+.hero{position:relative;padding:104px 0 40px;overflow:hidden}
+.hero-threads{position:absolute;inset:0;pointer-events:none}
+.hero-threads svg{width:100%;height:100%}
+.thread{fill:none;stroke:rgba(6,60,42,.10);stroke-width:1.5}
+.thread-lime{stroke:var(--lime);stroke-width:2;stroke-dasharray:5 13;animation:threadflow 7s linear infinite;opacity:.95}
+@keyframes threadflow{to{stroke-dashoffset:-180}}
+.hero-head{position:relative;text-align:center;max-width:880px;margin:0 auto}
+.hero h1{font-size:clamp(2.6rem,5.4vw,4.3rem);letter-spacing:-0.032em;line-height:1.06}
+.mark-lime{background-image:linear-gradient(0deg,rgba(188,248,63,.55),rgba(188,248,63,.55));background-repeat:no-repeat;background-size:100% 38%;background-position:0 82%;padding:0 .06em}
+.hero-sub{margin:26px auto 0;max-width:600px;font-size:18px;color:var(--ink-2)}
+.hero-cta{margin-top:38px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.hero-note{margin-top:16px;font-size:13.5px;color:var(--ink-3);font-weight:600}
+
+/* dashboard */
+.demo{position:relative;max-width:1080px;margin:84px auto 0;z-index:2}
+.dash{background:var(--surface);border-radius:var(--r-lg);box-shadow:var(--shadow-md);overflow:hidden}
+.dash-top{display:flex;align-items:center;gap:14px;padding:15px 22px;border-bottom:1px solid var(--line)}
+.dots{display:flex;gap:6px}
+.dots i{width:10px;height:10px;border-radius:50%;background:rgba(6,60,42,.14)}
+.dash-title{font-size:13.5px;font-weight:700;color:var(--ink-2)}
+.dash-range{margin-left:auto;font-size:12.5px;font-weight:700;color:var(--ink);background:var(--green-soft);padding:5px 12px;border-radius:999px}
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--line)}
+.metric{padding:22px 24px 20px;border-left:1px solid var(--line)}
+.metric:first-child{border-left:0}
+.metric-label{font-size:12px;font-weight:700;color:var(--ink-3);text-transform:uppercase;letter-spacing:.07em}
+.metric-value{font-size:30px;font-weight:800;letter-spacing:-.03em;margin-top:5px;line-height:1.1}
+.metric-delta{font-size:12.5px;font-weight:700;margin-top:6px;color:var(--green-mid);display:flex;align-items:center;gap:5px}
+.metric-delta svg{width:12px;height:12px}
+.metric-delta .up-dot{width:7px;height:7px;border-radius:50%;background:var(--lime);box-shadow:0 0 0 1.5px rgba(6,60,42,.2)}
+.dash-grid{display:grid;grid-template-columns:1.7fr 1fr;min-height:340px}
+.chart-card{padding:24px 26px 14px;border-right:1px solid var(--line);position:relative}
+.card-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:6px}
+.card-title{font-size:15px;font-weight:800;letter-spacing:-.01em}
+.card-sub{font-size:12.5px;font-weight:600;color:var(--ink-3)}
+.chart-wrap{position:relative}
+.chart-callout{position:absolute;top:8%;left:49%;background:var(--ink);color:var(--on-green);font-size:12px;font-weight:700;padding:9px 13px;border-radius:10px;line-height:1.45;max-width:210px;box-shadow:var(--shadow-sm)}
+.chart-callout b{color:var(--lime);font-weight:800}
+.chart-callout::after{content:"";position:absolute;left:-4px;bottom:16px;width:9px;height:9px;background:var(--ink);transform:rotate(45deg)}
+.dash-side{display:flex;flex-direction:column}
+.side-block{padding:22px 24px;border-top:1px solid var(--line);flex:1}
+.side-block:first-child{border-top:0}
+.topic-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line);font-size:14px}
+.topic-row:first-of-type{border-top:0;padding-top:14px}
+.topic-name{font-weight:700;letter-spacing:-.01em}
+.topic-delta{margin-left:auto;font-size:12.5px;font-weight:800;color:var(--green-mid);display:flex;align-items:center;gap:6px}
+.topic-delta::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--lime);box-shadow:0 0 0 1.5px rgba(6,60,42,.18)}
+.feed-item{display:flex;gap:11px;padding:11px 0;border-top:1px solid var(--line);font-size:13.5px;line-height:1.5}
+.feed-item:first-of-type{border-top:0;padding-top:14px}
+.feed-dot{flex:none;width:8px;height:8px;border-radius:50%;background:var(--ink);margin-top:7px;opacity:.85}
+.feed-dot.lime{background:var(--lime);box-shadow:0 0 0 1.5px rgba(6,60,42,.2);opacity:1}
+.feed-item p{color:var(--ink-2)}
+.feed-item b{color:var(--ink);font-weight:800}
+.feed-time{margin-left:auto;flex:none;font-size:11.5px;font-weight:700;color:var(--ink-3)}
+.chip-float{position:absolute;background:var(--surface);border-radius:14px;box-shadow:var(--shadow-sm);padding:13px 17px;display:flex;align-items:center;gap:11px;font-size:13px;font-weight:700;z-index:3}
+.chip-float .cf-ic{flex:none;width:34px;height:34px;border-radius:10px;background:var(--green-soft);display:flex;align-items:center;justify-content:center}
+.chip-float .cf-ic svg{width:17px;height:17px}
+.chip-float small{display:block;font-weight:600;color:var(--ink-3);font-size:11.5px;margin-top:1px}
+.chip-a{top:-26px;left:-38px}
+.chip-b{bottom:44px;right:-34px}
+.demo-caption{text-align:center;margin-top:18px;font-size:12.5px;color:var(--ink-3);font-weight:600}
+
+/* ============ SECTION SHELL ============ */
+.sect{padding:128px 0}
+.sect-head{max-width:720px;margin-bottom:64px}
+.sect-head.center{margin-left:auto;margin-right:auto;text-align:center}
+.sect-head.center .lead{margin-left:auto;margin-right:auto}
+.sect h2{font-size:clamp(2rem,3.6vw,2.9rem)}
+.sect-head .lead{margin-top:20px;font-size:17.5px}
+
+/* ============ VALUE PROPS ============ */
+.props{display:grid;grid-template-columns:repeat(3,1fr);gap:56px}
+.prop{border-top:2px solid var(--ink);padding-top:28px}
+.prop-ic{width:54px;height:54px;border-radius:14px;background:var(--green-soft);display:flex;align-items:center;justify-content:center;margin-bottom:22px}
+.prop-ic svg{width:26px;height:26px}
+.prop h3{font-size:20px;margin-bottom:12px}
+.prop p{font-size:15.5px;color:var(--ink-2)}
+
+/* ============ SOURCES ============ */
+.sources{border-top:1px solid var(--line)}
+.source-row{display:grid;grid-template-columns:220px 1fr auto;gap:40px;align-items:center;padding:34px 0;border-bottom:1px solid var(--line)}
+.source-name{display:flex;align-items:center;gap:15px;font-size:20px;font-weight:800;letter-spacing:-.02em}
+.source-ic{width:46px;height:46px;border-radius:13px;background:var(--surface);border:1px solid var(--line-2);display:flex;align-items:center;justify-content:center;flex:none}
+.source-ic svg{width:21px;height:21px}
+.source-row p{color:var(--ink-2);font-size:15.5px;max-width:520px}
+.source-tags{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.tag{font-size:12.5px;font-weight:700;color:var(--ink-2);border:1px solid var(--line-2);padding:6px 13px;border-radius:999px;white-space:nowrap}
+.soon{margin-top:44px}
+.soon-label{font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.09em;color:var(--ink-3);margin-bottom:16px}
+.soon-row{display:flex;gap:10px;flex-wrap:wrap}
+.soon-chip{display:inline-flex;align-items:center;gap:9px;font-size:13.5px;font-weight:700;color:var(--ink-2);background:var(--surface);border:1px dashed var(--line-2);padding:9px 16px;border-radius:999px}
+.soon-chip svg{width:16px;height:16px;flex:none}
+
+/* ============ COMPETITOR ============ */
+#solusi{padding-top:56px}
+.comp-grid{display:grid;grid-template-columns:1fr 1.05fr;gap:72px;align-items:center}
+.comp-list{margin-top:36px;display:flex;flex-direction:column}
+.comp-item{display:flex;gap:18px;padding:24px 0;border-top:1px solid var(--line)}
+.comp-item:last-child{border-bottom:1px solid var(--line)}
+.comp-ic{flex:none;width:40px;height:40px;border-radius:11px;background:var(--green-soft);display:flex;align-items:center;justify-content:center}
+.comp-ic svg{width:19px;height:19px}
+.comp-item h3{font-size:16.5px;margin-bottom:5px}
+.comp-item p{font-size:14.5px;color:var(--ink-2)}
+.panel{background:var(--surface);border:1px solid var(--line-2);border-radius:var(--r-lg);padding:28px}
+.panel + .panel{margin-top:18px}
+.sov-row{display:grid;grid-template-columns:110px 1fr 44px;gap:14px;align-items:center;padding:11px 0;font-size:13.5px}
+.sov-name{font-weight:700;color:var(--ink-2)}
+.sov-name.you{color:var(--ink);font-weight:800}
+.sov-bar{height:9px;border-radius:99px;background:rgba(6,60,42,.07);overflow:hidden}
+.sov-fill{height:100%;border-radius:99px;transform:scaleX(0);transform-origin:left;transition:transform 1.4s var(--ease)}
+.sov-val{font-size:13px;font-weight:800;text-align:right}
+
+/* ============ PROCESS (green) ============ */
+.process{background:var(--ink);color:var(--on-green);border-radius:36px;margin:0 20px}
+.process .sect-head{max-width:760px}
+.process h2{color:var(--on-green)}
+.process .lead{color:var(--on-green-2)}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:0;position:relative;margin-top:20px}
+.steps-line{position:absolute;top:27px;left:6%;right:6%;height:2px;background:rgba(242,247,238,.16)}
+.steps-line i{position:absolute;inset:0;background:var(--lime);transform-origin:left;transform:scaleX(0);transition:transform 1.6s var(--ease) .3s}
+.steps.in .steps-line i{transform:scaleX(1)}
+.step{padding:0 26px 0 0;position:relative}
+.step-dot{width:56px;height:56px;border-radius:50%;background:var(--surface);border:1px solid var(--surface);display:flex;align-items:center;justify-content:center;margin-bottom:26px;position:relative;z-index:1}
+.step-dot svg{width:26px;height:26px;stroke:#063C2A}
+.step-n{font-size:12px;font-weight:800;letter-spacing:.1em;color:var(--lime);margin-bottom:10px;text-transform:uppercase}
+.step h3{font-size:19px;color:var(--on-green);margin-bottom:10px}
+.step p{font-size:14.5px;color:var(--on-green-2)}
+
+/* ============ INSIGHT ============ */
+.insight-grid{display:grid;grid-template-columns:1.15fr 1fr;gap:64px;align-items:start}
+.trend-card{background:var(--surface);border:1px solid var(--line-2);border-radius:var(--r-lg);padding:28px 28px 16px;position:relative}
+.trend-meta{display:flex;align-items:center;gap:10px;margin:4px 0 2px}
+.trend-badge{font-size:12px;font-weight:800;color:var(--ink);background:var(--lime);padding:4px 11px;border-radius:999px}
+.trend-title{font-size:21px;font-weight:800;letter-spacing:-.02em}
+.evid-stack{display:flex;flex-direction:column;gap:16px}
+.evid-label{font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.09em;color:var(--ink-3)}
+.post{background:var(--surface);border:1px solid var(--line-2);border-radius:var(--r-md);padding:17px 19px;display:flex;gap:14px;align-items:flex-start}
+.post-ava{flex:none;width:38px;height:38px;border-radius:50%;background:var(--green-soft);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;position:relative;overflow:hidden}
+.post-ava img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.post-head{display:flex;align-items:center;gap:8px;font-size:13px;flex-wrap:wrap}
+.post-head b{font-weight:800}
+.post-src{font-size:11px;font-weight:800;padding:3px 9px;border-radius:999px;background:var(--green-soft);color:var(--green-mid)}
+.post p{font-size:13.5px;color:var(--ink-2);margin-top:4px;line-height:1.55}
+.post-stat{font-size:12px;font-weight:700;color:var(--ink-3);margin-top:7px}
+.reco{background:var(--ink);color:var(--on-green);border-radius:var(--r-md);padding:24px 26px}
+.reco-head{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.09em;color:var(--lime);margin-bottom:12px}
+.reco-head svg{width:16px;height:16px}
+.reco p{font-size:15px;color:var(--on-green);line-height:1.65}
+.reco p b{color:var(--lime)}
+.reco-wide{margin-top:26px;text-align:center;padding:38px 32px}
+.reco-wide .reco-head{justify-content:center}
+.reco-wide .reco-head svg{width:19px;height:19px}
+.reco-wide p{max-width:640px;margin:0 auto}
+
+/* ============ PRODUK (green) ============ */
+#produk{background:var(--ink);color:var(--on-green);border-radius:36px;margin:0 20px;padding:112px 0}
+#produk h2{color:var(--on-green)}
+#produk .lead{color:var(--on-green-2)}
+#produk .prop{border-top-color:rgba(242,247,238,.28)}
+#produk .prop h3{color:var(--on-green)}
+#produk .prop p{color:var(--on-green-2)}
+#produk .prop-ic{background:rgba(242,247,238,.08)}
+#produk .prop-ic svg{stroke:#F2F7EE}
+.lime-txt{color:var(--lime)}
+
+/* ============ PRICING ============ */
+.pricing{background:var(--green-soft);border-radius:36px;margin:0 20px;padding:112px 0}
+.price-card{background:var(--surface);border-radius:26px;overflow:hidden;position:relative;display:flex;flex-direction:column}
+.price-card.featured{background:var(--ink);color:var(--on-green);box-shadow:var(--shadow-md)}
+.price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;align-items:stretch;margin-top:56px}
+.price-badge{position:absolute;top:0;right:28px;background:var(--lime);color:var(--ink);font-size:11.5px;font-weight:800;padding:7px 14px;border-radius:0 0 10px 10px;text-transform:uppercase;letter-spacing:.07em}
+.price-top{padding:34px 32px 26px;border-bottom:1px solid var(--line)}
+.price-card.featured .price-top{border-bottom-color:rgba(242,247,238,.14)}
+.price-name{font-size:15px;font-weight:800;color:var(--ink-2)}
+.price-card.featured .price-name{color:var(--on-green-2)}
+.price-amount{display:flex;align-items:baseline;gap:8px;margin-top:12px}
+.price-amount .rp{font-size:18px;font-weight:800}
+.price-amount .val{font-size:40px;font-weight:800;letter-spacing:-.04em;line-height:1}
+.price-amount .per{font-size:14px;font-weight:700;color:var(--ink-3)}
+.price-card.featured .price-amount .per{color:var(--on-green-2)}
+.price-desc{margin-top:12px;font-size:14px;color:var(--ink-2)}
+.price-card.featured .price-desc{color:var(--on-green-2)}
+.price-body{padding:26px 32px 32px;display:flex;flex-direction:column;flex:1}
+.price-feats{list-style:none;display:flex;flex-direction:column;gap:12px;margin-bottom:26px}
+.price-feats li{display:flex;gap:11px;align-items:flex-start;font-size:14.5px;font-weight:600}
+.price-card.featured .price-feats li{color:var(--on-green)}
+.price-feats svg{flex:none;width:18px;height:18px;margin-top:2px}
+.price-body .btn{width:100%;justify-content:center;margin-top:auto}
+.price-note{text-align:center;margin-top:36px;font-size:13px;color:var(--ink-3);font-weight:600}
+
+/* ============ FINAL CTA ============ */
+.final{padding:64px 0 140px}
+.final-panel{background:
+  radial-gradient(circle 300px at -10% -20%, transparent 299px, rgba(242,247,238,.09) 299.5px, rgba(242,247,238,.09) 300.5px, transparent 301px),
+  radial-gradient(circle 320px at 112% 118%, transparent 319px, rgba(242,247,238,.09) 319.5px, rgba(242,247,238,.09) 320.5px, transparent 321px),
+  var(--ink);border-radius:36px;padding:96px 48px;text-align:center;position:relative;overflow:hidden}
+.final h2{color:var(--on-green);font-size:clamp(2rem,3.8vw,3.1rem);max-width:700px;margin:0 auto;position:relative}
+.final p{color:var(--on-green-2);margin:22px auto 0;max-width:480px;position:relative}
+.final .btn{margin-top:40px;position:relative}
+
+/* ============ FOOTER ============ */
+footer{border-top:1px solid var(--line);padding:64px 0 40px}
+.foot-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:48px}
+.foot-brand p{margin-top:16px;font-size:14px;color:var(--ink-2);max-width:280px}
+.foot-col h4{font-size:12.5px;font-weight:800;text-transform:uppercase;letter-spacing:.09em;color:var(--ink-3);margin-bottom:18px}
+.foot-col a{display:block;font-size:14.5px;font-weight:600;color:var(--ink-2);padding:5px 0;transition:color .25s}
+.foot-col a:hover{color:var(--ink)}
+.foot-base{margin-top:56px;padding-top:26px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:16px;font-size:13px;color:var(--ink-3);font-weight:600;flex-wrap:wrap}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width:1080px){
+  .chip-a{left:-8px}.chip-b{right:-6px}
+  .comp-grid{gap:48px}
+}
+@media (max-width:920px){
+  .nav-links,.nav-login{display:none}
+  .burger{display:block}
+  .dash-grid{grid-template-columns:1fr}
+  .chart-card{border-right:0;border-bottom:1px solid var(--line)}
+  .metrics{grid-template-columns:repeat(2,1fr)}
+  .metric:nth-child(3){border-left:0}
+  .metric:nth-child(n+3){border-top:1px solid var(--line)}
+  .props{grid-template-columns:1fr;gap:36px}
+  .comp-grid,.insight-grid{grid-template-columns:1fr;gap:56px}
+  .price-grid{grid-template-columns:1fr;max-width:520px;margin-left:auto;margin-right:auto}
+  .steps{grid-template-columns:repeat(2,1fr);gap:44px 32px}
+  .steps-line{display:none}
+  .source-row{grid-template-columns:1fr;gap:16px}
+  .source-tags{justify-content:flex-start}
+  .foot-grid{grid-template-columns:1fr 1fr;gap:40px}
+  .chip-float{display:none}
+}
+@media (max-width:600px){
+  .wrap{padding:0 22px}
+  .hero{padding-top:72px}
+  .sect{padding:88px 0}
+  .process,.pricing,#produk{margin:0 12px;border-radius:28px}
+  .final-panel{border-radius:28px;padding:72px 26px}
+  .steps{grid-template-columns:1fr}
+  .price-top,.price-body{padding-left:26px;padding-right:26px}
+  .chart-callout{left:38%;max-width:200px;font-size:11px}
+  .foot-grid{grid-template-columns:1fr}
+  .demo{margin-top:56px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .reveal{opacity:1;transform:none}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+<!--
+DIRECTION CONTRACT — Loomscape landing (seed c28dd1ed; brief-pinned world beats the roll)
+THESIS: Sinyal pasar yang berantakan dianyam menjadi satu gambaran yang jelas. Menolak template hero gelap SaaS dan susunan kartu generik: motif tenun/loom adalah struktur halaman, bukan dekorasi.
+OWN-WORLD: off-white hangat #FAFAF6, hijau dalam #063C2A sebagai tinta dan dua field penuh, lime #BCF83F hanya penanda/CTA/indikator, Manrope, hairline rgba(6,60,42,.10), radius 16–22, bayangan hijau halus, dashboard analitik yang bersih.
+STORY: pengunjung paham Loomscape mengubah sinyal TikTok/IG/Threads menjadi insight plus langkah berikutnya, lalu memilih Coba Gratis.
+FIRST VIEWPORT: headline editorial terpusat dengan highlight lime pada “lebih mudah”, dua CTA, dashboard lebar berbingkai dengan benang-benang loom (satu benang lime) mengalir masuk dari kedua sisi.
+FORM: editorial dashboard tenun — dipin oleh brief, menggantikan roll; raise: disiplin kepadatan data dari catalog challenger yang ditolak (setiap panel memuat angka dan bukti, bukan hiasan).
+FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance
+-->
+<a class="skip" href="#main">Langsung ke konten</a>
+
+<!-- ============ NAV ============ -->
+<header class="nav">
+  <div class="nav-in">
+    <a class="brand" href="#" aria-label="Loomscape, kembali ke beranda">
+      <svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><g stroke="#063C2A" stroke-width="3" stroke-linecap="round"><path d="M11 5v22M21 5v22"/><path d="M5 10h4M15 10h12M5 16h14M23 16h4M5 22h4M15 22h12"/></g></svg>
+      Loomscape
+    </a>
+    <nav class="nav-links" aria-label="Navigasi utama">
+      <a href="#produk">Produk</a>
+      <a href="#sumber-data">Sumber Data</a>
+      <a href="#solusi">Solusi</a>
+      <a href="#harga">Harga</a>
+      <a href="#tentang">Tentang Kami</a>
+    </nav>
+    <div class="nav-right">
+      <a class="nav-login" href="#">Masuk</a>
+      <a class="btn btn-lime btn-sm" href="#">Coba Gratis</a>
+      <button class="burger" id="burger" aria-label="Buka menu" aria-expanded="false" aria-controls="mobilePanel">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="#063C2A" stroke-width="2" stroke-linecap="round"><path d="M3 6h16M3 11h16M3 16h16"/></svg>
+      </button>
+    </div>
+  </div>
+  <nav class="mobile-panel" id="mobilePanel" aria-label="Navigasi mobile">
+    <a href="#produk">Produk</a>
+    <a href="#sumber-data">Sumber Data</a>
+    <a href="#solusi">Solusi</a>
+    <a href="#harga">Harga</a>
+    <a href="#tentang">Tentang Kami</a>
+    <a href="#">Masuk</a>
+  </nav>
+</header>
+
+<main id="main">
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="hero-threads" aria-hidden="true">
+    <svg viewBox="0 0 1440 640" preserveAspectRatio="none">
+      <path class="thread" d="M-20,90 C260,110 480,240 660,420"/>
+      <path class="thread" d="M-20,180 C240,200 470,300 650,450"/>
+      <path class="thread" d="M-20,290 C220,300 450,370 640,480"/>
+      <path class="thread" d="M-20,420 C220,420 430,450 630,510"/>
+      <path class="thread" d="M1460,60 C1180,90 960,220 780,410"/>
+      <path class="thread" d="M1460,160 C1200,190 980,290 790,445"/>
+      <path class="thread" d="M1460,280 C1220,300 1000,370 800,475"/>
+      <path class="thread" d="M1460,410 C1230,415 1020,450 810,505"/>
+      <path class="thread thread-lime" d="M-20,500 C300,480 560,480 720,520 C880,560 1180,470 1460,300"/>
+    </svg>
+  </div>
+  <div class="wrap">
+    <div class="hero-head">
+      <h1 class="reveal">Kini memahami pasar jadi <span class="mark-lime">lebih mudah</span>.</h1>
+      <p class="hero-sub reveal" data-delay="1">Loomscape membantu tim memantau percakapan pasar, aktivitas kompetitor, dan tren yang berkembang, lalu mengubahnya menjadi insight yang relevan untuk keputusan marketing.</p>
+      <div class="hero-cta reveal" data-delay="2">
+        <a class="btn btn-lime" href="#">Coba Gratis
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8h11M9 3.5 13.5 8 9 12.5"/></svg>
+        </a>
+        <a class="btn btn-ghost" href="#demo">Lihat Demo</a>
+      </div>
+      <p class="hero-note reveal" data-delay="3">Tanpa instalasi. Siap dipakai dalam hitungan menit.</p>
+    </div>
+
+    <!-- DASHBOARD MOCK -->
+    <div class="demo reveal" data-delay="2" id="demo">
+      <div class="chip-float chip-a" aria-hidden="true">
+        <span class="cf-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#063C2A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l5.5-5.5 3.5 3.5L21 6"/><path d="M15 6h6v6"/></svg></span>
+        <span>Sentimen positif 64%<small>naik 6 poin minggu ini</small></span>
+      </div>
+      <div class="chip-float chip-b" aria-hidden="true">
+        <span class="cf-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#063C2A" stroke-width="1.8" stroke-linecap="round"><path d="M12 3v13M7 10l5 6 5-6"/><path d="M4 21h16"/></svg></span>
+        <span>Topik naik daun<small><b class="num">#skinbarrier</b> · +212% percakapan</small></span>
+      </div>
+
+      <div class="dash" role="img" aria-label="Contoh tampilan dashboard Loomscape: ringkasan pasar berisi total mention, sentimen, sumber aktif, grafik percakapan, topik naik daun, dan aktivitas kompetitor. Data ilustrasi.">
+        <div class="dash-top">
+          <div class="dots" aria-hidden="true"><i></i><i></i><i></i></div>
+          <span class="dash-title">Loomscape · Proyek: Skincare Lokal Q3</span>
+          <span class="dash-range">30 hari terakhir</span>
+        </div>
+        <div class="metrics">
+          <div class="metric">
+            <div class="metric-label">Total Mention</div>
+            <div class="metric-value num" data-count="12480">0</div>
+            <div class="metric-delta"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 10 10 2M4.5 2H10v5.5"/></svg>+18,2% vs periode lalu</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Sentimen Positif</div>
+            <div class="metric-value num"><span data-count="64">0</span>%</div>
+            <div class="metric-delta"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 10 10 2M4.5 2H10v5.5"/></svg>+6 poin minggu ini</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Sumber Aktif</div>
+            <div class="metric-value num" data-count="3">0</div>
+            <div class="metric-delta"><span class="up-dot" aria-hidden="true"></span>TikTok · Instagram · Threads</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Topik Baru Terdeteksi</div>
+            <div class="metric-value num" data-count="7">0</div>
+            <div class="metric-delta"><span class="up-dot" aria-hidden="true"></span>2 berprioritas tinggi</div>
+          </div>
+        </div>
+        <div class="dash-grid">
+          <div class="chart-card">
+            <div class="card-head">
+              <span class="card-title">Volume Percakapan</span>
+              <span class="card-sub">semua kanal · harian</span>
+            </div>
+            <div class="chart-wrap">
+              <svg viewBox="0 0 560 222" width="100%" role="img" aria-label="Grafik garis volume percakapan 30 hari dengan puncak pada 14 Agustus">
+                <g stroke="rgba(6,60,42,.08)" stroke-width="1">
+                  <line x1="0" y1="44" x2="560" y2="44"/><line x1="0" y1="95" x2="560" y2="95"/><line x1="0" y1="146" x2="560" y2="146"/>
+                </g>
+                <g font-family="Manrope,Arial,sans-serif" font-size="10" font-weight="700" fill="rgba(6,60,42,.45)">
+                  <text x="0" y="40">12 rb</text><text x="0" y="91">8 rb</text><text x="0" y="142">4 rb</text>
+                  <text x="0" y="215">1 Agu</text><text x="130" y="215">7 Agu</text><text x="262" y="215">14 Agu</text><text x="392" y="215">21 Agu</text><text x="516" y="215">28 Agu</text>
+                </g>
+                <path id="areaPath" fill="rgba(6,60,42,.07)" d="M0,150 C20,148 30,143 40,142 S70,148 80,146 S110,134 120,132 S150,138 160,136 S190,122 200,120 S230,112 240,110 C255,108 262,70 270,58 C278,72 290,92 300,96 S330,102 340,104 S370,94 380,92 S410,86 420,84 S450,74 460,70 S490,64 500,60 S545,48 560,44 L560,190 L0,190 Z"/>
+                <path id="linePath" fill="none" stroke="#063C2A" stroke-width="2.5" stroke-linecap="round" d="M0,150 C20,148 30,143 40,142 S70,148 80,146 S110,134 120,132 S150,138 160,136 S190,122 200,120 S230,112 240,110 C255,108 262,70 270,58 C278,72 290,92 300,96 S330,102 340,104 S370,94 380,92 S410,86 420,84 S450,74 460,70 S490,64 500,60 S545,48 560,44"/>
+                <circle cx="270" cy="58" r="5.5" fill="#BCF83F" stroke="#063C2A" stroke-width="2"/>
+              </svg>
+              <div class="chart-callout">Puncak 14 Agu: video kompetitor viral, <b>2,1 jt views</b></div>
+            </div>
+          </div>
+          <div class="dash-side">
+            <div class="side-block">
+              <div class="card-head"><span class="card-title">Topik Naik Daun</span></div>
+              <div class="topic-row"><span class="topic-name">#skinbarrier</span><span class="topic-delta num">+212%</span></div>
+              <div class="topic-row"><span class="topic-name">sunscreen untuk remaja</span><span class="topic-delta num">+96%</span></div>
+              <div class="topic-row"><span class="topic-name">parfum lokal tahan lama</span><span class="topic-delta num">+61%</span></div>
+            </div>
+            <div class="side-block">
+              <div class="card-head"><span class="card-title">Aktivitas Kompetitor</span></div>
+              <div class="feed-item"><span class="feed-dot lime"></span><p><b>Brand B</b> meluncurkan campaign #GlowBareng, 48 konten dalam 6 hari</p><span class="feed-time">2j</span></div>
+              <div class="feed-item"><span class="feed-dot"></span><p><b>Brand C</b> menaikkan frekuensi konten edukasi ingredients</p><span class="feed-time">5j</span></div>
+              <div class="feed-item"><span class="feed-dot"></span><p><b>Brand B</b> membalas 212 komentar keluhan kemasan</p><span class="feed-time">1h</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="demo-caption">Tampilan ilustrasi dengan data sintetis, bukan angka pelanggan nyata.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ VALUE PROPS ============ -->
+<section class="sect" id="produk">
+  <div class="wrap">
+    <div class="sect-head reveal">
+      <h2>Bukan sekadar data. Bahan untuk <span class="lime-txt">mengambil keputusan</span>.</h2>
+      <p class="lead">Loomscape dibangun untuk marketer yang perlu menjawab “jadi, apa langkah kita selanjutnya?”, bukan hanya melihat grafik naik-turun.</p>
+    </div>
+    <div class="props">
+      <div class="prop reveal">
+        <div class="prop-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#063C2A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.5-3 8.5-7 10-4-1.5-7-5.5-7-10V6l7-3z"/><path d="M9 12l2 2 4-4.5"/></svg></div>
+        <h3>Sumber Data Terpercaya</h3>
+        <p>Setiap angka bisa ditelusuri kembali ke asalnya. Anda melihat percakapan asli dari TikTok, Instagram, dan Threads, bukan rangkuman yang tidak jelas sumbernya.</p>
+      </div>
+      <div class="prop reveal" data-delay="1">
+        <div class="prop-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#063C2A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/><path d="M8.5 11h5M11 8.5v5"/></svg></div>
+        <h3>Insight yang Relevan</h3>
+        <p>Kami menyaring ribuan sinyal menjadi konteks yang penting untuk brand Anda: apa yang berubah, mengapa berubah, dan apa artinya bagi strategi Anda.</p>
+      </div>
+      <div class="prop reveal" data-delay="2">
+        <div class="prop-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#063C2A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-4.6 7-11a7 7 0 1 0-14 0c0 6.4 7 11 7 11z"/><path d="M9.5 10l1.8 1.8 3.2-3.6"/></svg></div>
+        <h3>Keputusan Lebih Percaya Diri</h3>
+        <p>Setiap insight ditutup dengan rekomendasi langkah yang bisa Anda bawa ke rapat, lengkap dengan bukti pendukung di belakangnya.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SOURCES ============ -->
+<section class="sect" id="sumber-data">
+  <div class="wrap">
+    <div class="sect-head reveal">
+      <h2>Data dari kanal tempat pasar benar-benar bicara.</h2>
+      <p class="lead">Mulai dari tiga kanal sosial teraktif di Indonesia, dengan lebih banyak sumber data segera hadir.</p>
+    </div>
+    <div class="sources">
+      <div class="source-row reveal">
+        <div class="source-name">
+          <span class="source-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#063C2A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 17.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM9 17.5V4l10-2v13"/><path d="M19 15a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z" transform="translate(0 -3)"/></svg></span>
+          TikTok
+        </div>
+        <p>Tangkap video, sound, dan produk yang mulai naik daun, sebelum trennya jenuh dan semua brand ikut-ikutan.</p>
+        <div class="source-tags"><span class="tag">Video</span><span class="tag">Sound</span><span class="tag">Komentar</span></div>
+      </div>
+      <div class="source-row reveal" data-delay="1">
+        <div class="source-name">
+          <span class="source-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#063C2A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5.5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1.1" fill="#063C2A" stroke="none"/></svg></span>
+          Instagram
+        </div>
+        <p>Pantau konten, campaign, dan percakapan yang bergerak di Feed, Reels, hingga kolom komentar.</p>
+        <div class="source-tags"><span class="tag">Feed</span><span class="tag">Reels</span><span class="tag">Komentar</span></div>
+      </div>
+      <div class="source-row reveal" data-delay="2">
+        <div class="source-name">
+          <span class="source-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#063C2A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M15.5 12a3.5 3.5 0 1 1-1.6-2.9c1 .6 1.6 1.7 1.6 2.9v1.5a1.8 1.8 0 0 0 3.6 0V12"/></svg></span>
+          Threads
+        </div>
+        <p>Ikuti opini, keluhan, dan rekomendasi yang sering muncul lebih dulu dalam bentuk teks.</p>
+        <div class="source-tags"><span class="tag">Opini</span><span class="tag">Keluhan</span><span class="tag">Percakapan</span></div>
+      </div>
+    </div>
+    <div class="soon reveal">
+      <div class="soon-label">Segera hadir</div>
+      <div class="soon-row">
+        <span class="soon-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8h12l-1 12a2 2 0 0 1-2 1.8H9A2 2 0 0 1 7 20L6 8z"/><path d="M9 10V6a3 3 0 0 1 6 0v4"/></svg>E-commerce</span>
+        <span class="soon-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="12" rx="2.5"/><path d="M9 8V6.5A2.5 2.5 0 0 1 11.5 4h1A2.5 2.5 0 0 1 15 6.5V8"/><path d="M3 13h18"/></svg>Job board</span>
+        <span class="soon-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11v2a1 1 0 0 0 1 1h2l8 4V6l-8 4H5a1 1 0 0 0-1 1z"/><path d="M18 9a4 4 0 0 1 0 6"/></svg>Ads library</span>
+        <span class="soon-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10l1-5h14l1 5"/><path d="M4 10a2.5 2.5 0 0 0 5 0 2.5 2.5 0 0 0 5 0 2.5 2.5 0 0 0 5 0"/><path d="M5.5 12.5V20h13v-7.5"/><path d="M10 20v-5h4v5"/></svg>Google Business Profile</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ COMPETITOR ============ -->
+<section class="sect" id="solusi">
+  <div class="wrap">
+    <div class="comp-grid">
+      <div class="reveal">
+        <h2>Ketahui gerak-gerik kompetitor, tanpa menebak.</h2>
+        <p class="lead" style="margin-top:20px">Loomscape memantau campaign, konten, dan pesan kompetitor dalam proyek yang sama, jadi Anda selalu tahu siapa yang sedang bergerak, dan dengan strategi apa.</p>
+        <div class="comp-list">
+          <div class="comp-item">
+            <span class="comp-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#063C2A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l14-5v12L3 13v-2z"/><path d="M7 13.5V17a2 2 0 0 0 4 0v-2.2"/><path d="M20 8.5a3.5 3.5 0 0 1 0 7"/></svg></span>
+            <div><h3>Campaign &amp; konten</h3><p>Ketahui begitu kompetitor meluncurkan campaign atau konten baru, lengkap dengan jangkauan dan responsnya.</p></div>
+          </div>
+          <div class="comp-item">
+            <span class="comp-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#063C2A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4V5z"/><path d="M8 9h8M8 12.5h5"/></svg></span>
+            <div><h3>Pesan &amp; angle</h3><p>Baca narasi yang mereka dorong: apa yang mereka janjikan, dengan bahasa apa, dan ke siapa.</p></div>
+          </div>
+          <div class="comp-item">
+            <span class="comp-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#063C2A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5v4.5l3 2"/><circle cx="12" cy="12" r="1.4" fill="#063C2A" stroke="none"/></svg></span>
+            <div><h3>Celah pasar</h3><p>Lihat kebutuhan yang sering muncul di percakapan, tapi belum dijawab oleh siapa pun, termasuk kompetitor Anda.</p></div>
+          </div>
+        </div>
+      </div>
+      <div class="reveal" data-delay="1">
+        <div class="panel">
+          <div class="card-head"><span class="card-title">Share of Voice · kategori skincare lokal</span><span class="card-sub">30 hari</span></div>
+          <div class="sov-row"><span class="sov-name you">Brand Anda</span><div class="sov-bar"><div class="sov-fill" data-w="34" style="background:#063C2A"></div></div><span class="sov-val num">34%</span></div>
+          <div class="sov-row"><span class="sov-name">Kompetitor A</span><div class="sov-bar"><div class="sov-fill" data-w="28" style="background:rgba(6,60,42,.55)"></div></div><span class="sov-val num">28%</span></div>
+          <div class="sov-row"><span class="sov-name">Kompetitor B</span><div class="sov-bar"><div class="sov-fill" data-w="22" style="background:rgba(6,60,42,.38)"></div></div><span class="sov-val num">22%</span></div>
+          <div class="sov-row"><span class="sov-name">Lainnya</span><div class="sov-bar"><div class="sov-fill" data-w="16" style="background:rgba(6,60,42,.22)"></div></div><span class="sov-val num">16%</span></div>
+        </div>
+        <div class="panel">
+          <div class="card-head"><span class="card-title">Terdeteksi minggu ini</span></div>
+          <div class="feed-item"><span class="feed-dot lime"></span><p><b>Kompetitor A</b> mengubah pesan utama dari “glowing” ke “skin barrier”, mengikuti tren yang sama</p><span class="feed-time">2h</span></div>
+          <div class="feed-item"><span class="feed-dot"></span><p><b>Kompetitor B</b> menjalankan promo bundling di 3 kanal sekaligus</p><span class="feed-time">1h</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PROCESS ============ -->
+<section class="process">
+  <div class="wrap sect" style="padding-top:112px;padding-bottom:112px">
+    <div class="sect-head reveal">
+      <h2>Dari sinyal ke langkah berikutnya.</h2>
+      <p class="lead">Setiap insight di Loomscape melewati alur yang sama, sehingga yang sampai ke meja Anda bukan terkaan, melainkan rekomendasi yang bisa dipertanggungjawabkan.</p>
+    </div>
+    <div class="steps reveal">
+      <div class="steps-line" aria-hidden="true"><i></i></div>
+      <div class="step">
+        <div class="step-dot"><svg viewBox="0 0 24 24" fill="none" stroke="#F2F7EE" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="2" fill="#BCF83F" stroke="none"/><path d="M8.5 15.5a5 5 0 0 1 0-7M15.5 8.5a5 5 0 0 1 0 7M5.5 18.5a9.5 9.5 0 0 1 0-13M18.5 5.5a9.5 9.5 0 0 1 0 13"/></svg></div>
+        <div class="step-n">Langkah 1</div>
+        <h3>Signal</h3>
+        <p>Loomscape menangkap percakapan, konten, dan aktivitas pasar dari semua kanal yang Anda pantau.</p>
+      </div>
+      <div class="step">
+        <div class="step-dot"><svg viewBox="0 0 24 24" fill="none" stroke="#F2F7EE" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h8l4 4v14H6V3z"/><path d="M14 3v4h4"/><path d="M9 12h6M9 15.5h6"/></svg></div>
+        <div class="step-n">Langkah 2</div>
+        <h3>Evidence</h3>
+        <p>Setiap sinyal disertai bukti: tautan ke sumber asli, tangkapan percakapan, dan metrik pendukungnya.</p>
+      </div>
+      <div class="step">
+        <div class="step-dot"><svg viewBox="0 0 24 24" fill="none" stroke="#F2F7EE" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 13l9 5 9-5"/></svg></div>
+        <div class="step-n">Langkah 3</div>
+        <h3>Context</h3>
+        <p>Sinyal dibaca dalam konteks: posisi brand Anda, gerakan kompetitor, dan arah tren yang lebih luas.</p>
+      </div>
+      <div class="step">
+        <div class="step-dot"><svg viewBox="0 0 24 24" fill="none" stroke="#F2F7EE" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M15.5 8.5l-2 5-5 2 2-5 5-2z" fill="#BCF83F" stroke="none"/></svg></div>
+        <div class="step-n">Langkah 4</div>
+        <h3>Recommendation</h3>
+        <p>Anda menerima langkah berikutnya yang spesifik dan masuk akal, bukan sekadar grafik untuk ditafsirkan sendiri.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ INSIGHT EXAMPLE ============ -->
+<section class="sect">
+  <div class="wrap">
+    <div class="sect-head reveal">
+      <h2>Seperti apa insight yang akan Anda terima?</h2>
+      <p class="lead">Contoh cara Loomscape membaca satu tren, dari sinyal awal sampai rekomendasi langkah. Data di bawah adalah ilustrasi.</p>
+    </div>
+    <div class="insight-grid">
+      <div class="trend-card reveal">
+        <div class="trend-meta"><span class="trend-badge">Tren naik · prioritas tinggi</span><span class="card-sub">6 minggu terakhir</span></div>
+        <div class="trend-title">Topik: “skin barrier”</div>
+        <div class="card-sub" style="margin-bottom:10px">Percakapan lintas TikTok, Instagram, dan Threads</div>
+        <div class="chart-wrap">
+          <svg viewBox="0 0 520 236" width="100%" role="img" aria-label="Grafik garis pertumbuhan topik skin barrier yang naik 3,2 kali dalam 6 minggu">
+            <g stroke="rgba(6,60,42,.08)" stroke-width="1">
+              <line x1="0" y1="45" x2="520" y2="45"/><line x1="0" y1="100" x2="520" y2="100"/><line x1="0" y1="155" x2="520" y2="155"/>
+            </g>
+            <g font-family="Manrope,Arial,sans-serif" font-size="10" font-weight="700" fill="rgba(6,60,42,.45)">
+              <text x="0" y="230">Mgg 1</text><text x="100" y="230">Mgg 2</text><text x="200" y="230">Mgg 3</text><text x="300" y="230">Mgg 4</text><text x="400" y="230">Mgg 5</text><text x="492" y="230">Mgg 6</text>
+            </g>
+            <path fill="rgba(6,60,42,.07)" d="M0,192 C30,190 60,187 90,184 S150,175 180,170 S240,152 270,142 S330,118 360,106 S420,80 450,68 S505,50 520,44 L520,205 L0,205 Z"/>
+            <path id="trendLine" fill="none" stroke="#063C2A" stroke-width="2.5" stroke-linecap="round" d="M0,192 C30,190 60,187 90,184 S150,175 180,170 S240,152 270,142 S330,118 360,106 S420,80 450,68 S505,50 520,44"/>
+            <circle cx="520" cy="44" r="6" fill="#BCF83F" stroke="#063C2A" stroke-width="2"/>
+            <circle cx="520" cy="44" r="12" fill="none" stroke="rgba(188,248,63,.5)" stroke-width="2">
+              <animate attributeName="r" values="8;16;8" dur="2.6s" repeatCount="indefinite"/>
+              <animate attributeName="stroke-opacity" values=".6;0;.6" dur="2.6s" repeatCount="indefinite"/>
+            </circle>
+          </svg>
+          <div class="chart-callout" style="top:0;left:auto;right:6%">Naik <b>3,2x</b> dalam 6 minggu</div>
+        </div>
+      </div>
+      <div class="evid-stack reveal" data-delay="1">
+        <div class="evid-label">Bukti dari lapangan</div>
+        <div class="post">
+          <span class="post-ava">R<img src="https://i.pravatar.cc/80?img=47" alt="" loading="lazy" onerror="this.remove()"></span>
+          <div>
+            <div class="post-head"><b>@riniskin</b><span class="post-src">TikTok</span></div>
+            <p>“3 tanda skin barrier kamu rusak, dan cara benerinnya tanpa ganti semua skincare...”</p>
+            <div class="post-stat num">1,2 jt views · 98 rb likes</div>
+          </div>
+        </div>
+        <div class="post">
+          <span class="post-ava">G<img src="https://i.pravatar.cc/80?img=32" alt="" loading="lazy" onerror="this.remove()"></span>
+          <div>
+            <div class="post-head"><b>@glowdaily</b><span class="post-src">Instagram</span></div>
+            <p>Carousel “ingredients yang aman untuk barrier” dibagikan ulang 12 ribu kali minggu ini.</p>
+            <div class="post-stat num">84 rb likes · 12 rb shares</div>
+          </div>
+        </div>
+        <div class="post">
+          <span class="post-ava">S<img src="https://i.pravatar.cc/80?img=26" alt="" loading="lazy" onerror="this.remove()"></span>
+          <div>
+            <div class="post-head"><b>@skintalkid</b><span class="post-src">Threads</span></div>
+            <p>“Kenapa ya tiap pakai serum X malah perih?” Keluhan berulang, muncul di 300+ thread.</p>
+            <div class="post-stat num">3,1 rb balasan</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="reco reco-wide reveal" data-delay="2">
+      <div class="reco-head"><svg viewBox="0 0 24 24" fill="none" stroke="#BCF83F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.9.7 1.5 1.3 1.5 2.1h4c0-.8.6-1.4 1.5-2.1A6 6 0 0 0 12 3z"/></svg>Rekomendasi Loomscape</div>
+      <p>Angkat edukasi <b>skin barrier</b> dalam <b>dua minggu ke depan</b>. Gunakan bahasa yang dipakai audiens (“perih”, “barrier rusak”), bukan istilah klinis. Konten keluhan seperti di Threads adalah bahan hook terbaik.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PRICING ============ -->
+<section class="pricing" id="harga">
+  <div class="wrap">
+    <div class="sect-head center reveal" style="margin-bottom:0">
+      <h2>Harga yang masuk akal untuk tim kecil.</h2>
+      <p class="lead">Mulai gratis, lanjutkan kalau cocok. Tanpa setup yang rumit, tanpa kontrak panjang.</p>
+    </div>
+    <div class="price-grid">
+      <div class="price-card reveal" data-delay="1">
+        <div class="price-top">
+          <span class="price-badge">Early Access</span>
+          <div class="price-name">Starter</div>
+          <div class="price-amount"><span class="rp">Rp</span><span class="val num">299.000</span><span class="per">/bulan</span></div>
+          <p class="price-desc">Untuk brand atau bisnis yang baru mulai memantau pasarnya.</p>
+        </div>
+        <div class="price-body">
+          <ul class="price-feats">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="#063C2A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>1 proyek pemantauan pasar</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="#063C2A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>Sumber TikTok, Instagram, dan Threads</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="#063C2A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>5 keyword dan 3 kompetitor</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="#063C2A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>Laporan insight mingguan</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="#063C2A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>Rekomendasi langkah berikutnya</li>
+          </ul>
+          <a class="btn btn-lime" href="#">Coba Gratis
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8h11M9 3.5 13.5 8 9 12.5"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="price-card featured reveal" data-delay="2">
+        <div class="price-top">
+          <span class="price-badge">Paling Populer</span>
+          <div class="price-name">Growth</div>
+          <div class="price-amount"><span class="rp">Rp</span><span class="val num">799.000</span><span class="per">/bulan</span></div>
+          <p class="price-desc">Untuk tim yang sedang bertumbuh dan memantau lebih banyak sinyal.</p>
+        </div>
+        <div class="price-body">
+          <ul class="price-feats">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="#BCF83F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>3 proyek pemantauan pasar</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="#BCF83F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>Semua sumber di Starter</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="#BCF83F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>20 keyword dan 10 kompetitor</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="#BCF83F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>Alert perubahan pasar real-time</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="#BCF83F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>Laporan insight harian</li>
+          </ul>
+          <a class="btn btn-lime" href="#">Coba Gratis
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8h11M9 3.5 13.5 8 9 12.5"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="price-card reveal" data-delay="3">
+        <div class="price-top">
+          <div class="price-name">Scale</div>
+          <div class="price-amount"><span class="rp">Rp</span><span class="val num">1.999.000</span><span class="per">/bulan</span></div>
+          <p class="price-desc">Untuk tim marketing yang mengelola beberapa brand sekaligus.</p>
+        </div>
+        <div class="price-body">
+          <ul class="price-feats">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="#063C2A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>Proyek tanpa batas</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="#063C2A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>50 keyword dan 25 kompetitor</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="#063C2A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>Akses awal ke sumber data baru</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="#063C2A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>Review strategi bulanan</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="#063C2A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>Dukungan prioritas</li>
+          </ul>
+          <a class="btn btn-ghost" href="#">Hubungi Kami
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8h11M9 3.5 13.5 8 9 12.5"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+    <p class="price-note reveal" data-delay="3">Harga khusus early access, dapat berubah saat peluncuran penuh. Semua paket bisa dicoba gratis lebih dulu.</p>
+  </div>
+</section>
+
+<!-- ============ FINAL CTA ============ -->
+<section class="final">
+  <div class="wrap">
+    <div class="final-panel reveal">
+      <h2>Pahami pasar sebelum kompetitor melangkah lebih dulu.</h2>
+      <p>Coba Loomscape hari ini dan lihat apa yang sebenarnya sedang terjadi di pasar Anda.</p>
+      <a class="btn btn-lime" href="#">Coba Gratis
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8h11M9 3.5 13.5 8 9 12.5"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer id="tentang">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <a class="brand" href="#" aria-label="Loomscape">
+          <svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><g stroke="#063C2A" stroke-width="3" stroke-linecap="round"><path d="M11 5v22M21 5v22"/><path d="M5 10h4M15 10h12M5 16h14M23 16h4M5 22h4M15 22h12"/></g></svg>
+          Loomscape
+        </a>
+        <p>Platform market intelligence untuk tim marketing di Indonesia. Dari sinyal pasar yang tersebar, menjadi gambaran yang jelas.</p>
+      </div>
+      <div class="foot-col">
+        <h4>Produk</h4>
+        <a href="#produk">Kenapa Loomscape</a>
+        <a href="#demo">Lihat Demo</a>
+        <a href="#harga">Harga</a>
+      </div>
+      <div class="foot-col">
+        <h4>Sumber Data</h4>
+        <a href="#sumber-data">TikTok</a>
+        <a href="#sumber-data">Instagram</a>
+        <a href="#sumber-data">Threads</a>
+      </div>
+      <div class="foot-col">
+        <h4>Perusahaan</h4>
+        <a href="#tentang">Tentang Kami</a>
+        <a href="#">Masuk</a>
+        <a href="#">Coba Gratis</a>
+      </div>
+    </div>
+    <div class="foot-base">
+      <span>© <span id="year">2026</span> Loomscape. Seluruh hak cipta dilindungi.</span>
+      <span>Dibuat untuk pasar Indonesia.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* Mobile nav */
+  var burger = document.getElementById("burger");
+  var panel = document.getElementById("mobilePanel");
+  burger.addEventListener("click", function(){
+    var open = panel.classList.toggle("open");
+    burger.setAttribute("aria-expanded", open ? "true" : "false");
+    burger.setAttribute("aria-label", open ? "Tutup menu" : "Buka menu");
+  });
+  panel.querySelectorAll("a").forEach(function(a){
+    a.addEventListener("click", function(){ panel.classList.remove("open"); burger.setAttribute("aria-expanded","false"); });
+  });
+
+  /* Reveal on scroll (staggered by data-delay) */
+  var reveals = document.querySelectorAll(".reveal");
+  if(reduce || !("IntersectionObserver" in window)){
+    reveals.forEach(function(el){ el.classList.add("in"); });
+  } else {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(!e.isIntersecting) return;
+        var el = e.target;
+        var d = parseInt(el.getAttribute("data-delay") || "0", 10);
+        el.style.transitionDelay = (d * 120) + "ms";
+        el.classList.add("in");
+        io.unobserve(el);
+      });
+    }, { threshold: 0.12, rootMargin: "0px 0px -6% 0px" });
+    reveals.forEach(function(el){ io.observe(el); });
+  }
+
+  /* Count-up metrics */
+  function countUp(el){
+    var target = parseInt(el.getAttribute("data-count"), 10);
+    var dur = 1400, start = null;
+    function fmt(n){ return n.toLocaleString("id-ID"); }
+    if(reduce){ el.textContent = fmt(target); return; }
+    function tick(t){
+      if(!start) start = t;
+      var p = Math.min((t - start) / dur, 1);
+      var eased = 1 - Math.pow(1 - p, 4);
+      el.textContent = fmt(Math.round(target * eased));
+      if(p < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  /* Chart line draw */
+  function drawLine(path){
+    var len = path.getTotalLength();
+    if(reduce) return;
+    path.style.strokeDasharray = len;
+    path.style.strokeDashoffset = len;
+    requestAnimationFrame(function(){
+      path.style.transition = "stroke-dashoffset 1.8s cubic-bezier(.16,1,.3,1) .2s";
+      path.style.strokeDashoffset = "0";
+    });
+  }
+
+  /* Share-of-voice bars + steps line */
+  function fillBars(scope){
+    scope.querySelectorAll(".sov-fill").forEach(function(b){
+      b.style.width = b.getAttribute("data-w") + "%";
+      b.style.transform = "scaleX(1)";
+    });
+  }
+
+  var demoIO = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(!e.isIntersecting) return;
+      e.target.querySelectorAll("[data-count]").forEach(countUp);
+      var lp = e.target.querySelector("#linePath"); if(lp) drawLine(lp);
+      demoIO.unobserve(e.target);
+    });
+  }, { threshold: 0.25 });
+  var demo = document.querySelector(".dash");
+  if(demo) demoIO.observe(demo);
+
+  var trendIO = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(!e.isIntersecting) return;
+      var tl = e.target.querySelector("#trendLine"); if(tl) drawLine(tl);
+      trendIO.unobserve(e.target);
+    });
+  }, { threshold: 0.35 });
+  var trend = document.querySelector(".trend-card");
+  if(trend) trendIO.observe(trend);
+
+  var sovIO = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(!e.isIntersecting) return;
+      fillBars(e.target);
+      sovIO.unobserve(e.target);
+    });
+  }, { threshold: 0.3 });
+  document.querySelectorAll(".panel").forEach(function(p){ sovIO.observe(p); });
+
+  var stepsIO = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(!e.isIntersecting) return;
+      e.target.classList.add("in");
+      stepsIO.unobserve(e.target);
+    });
+  }, { threshold: 0.3 });
+  var steps = document.querySelector(".steps");
+  if(steps) stepsIO.observe(steps);
+
+  /* Footer year */
+  document.getElementById("year").textContent = new Date().getFullYear();
+})();
+</script>
+</body>
+</html>
